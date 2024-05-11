@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  web:
+    image: ubuntu/apache2:latest
+    environment:
+      PUID: 1000
+      PGID: 1000
+    ports:
+      - 80:80
+    depends_on:
+      - mariadb
+    volumes:
+      - ./var_www_html/:/var/www/html/
+      - ./apache2.confd/:/etc/apache2/apache2.confd
+
+  mariadb:
+    image: mariadb:latest
+    environment:
+      PUID: 1000
+      PGID: 1000
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: mitaka_db
+      MYSQL_USER: mitaka
+      MYSQL_PASSWORD: 123456
+    volumes:
+      - ./db:/var/lib/mysql
+      - ./config/mariadb.cnf:/etc/mysql/mariadb.conf.d/custom.cnf
+      - ./import/mariadb:/docker-entrypoint-initdb.d
